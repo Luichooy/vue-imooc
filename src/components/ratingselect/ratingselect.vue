@@ -65,15 +65,14 @@
         if (!event._constructed) {
           return;
         }
-
-        this.selectType = type;
+        this.$emit('toggleType', type);
       },
       toggle(event){
         if (!event._constructed) {
           return;
         }
-        console.log(this.ratings);
-        this.onlyContent = !this.onlyContent;
+//        this.onlyContent = !this.onlyContent;
+        this.$emit('toggleOnlyContent', !this.onlyContent);
       }
     }
   };
