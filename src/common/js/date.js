@@ -10,7 +10,7 @@ export function formatDate(date, fmt) {
     's+': date.getSeconds()
   };
   for (let k in o) {
-    if (new RegExp(`(${k})`).text(fmt)) {
+    if (new RegExp(`(${k})`).test(fmt)) {
       let str = o[k] + '';
       fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? str : padLeftZero(str));
     }
@@ -19,4 +19,4 @@ export function formatDate(date, fmt) {
 };
 function padLeftZero(str) {
   return ('00' + str).substr(str.length);
-};
+}
