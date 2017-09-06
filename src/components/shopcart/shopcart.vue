@@ -259,10 +259,22 @@
           &.enough
             background-color: #00b43c
             color: #ffffff
-    .fold-enter-active,.fold-leave-active
-      transition: all linear 300ms
-    .fold-enter,.fold-leave-to
-      transform:translateY(0)
+
+    .fold-enter-active
+      animation: fold-in 300ms
+    .fold-leave-active
+      animation: fold-in 300ms reverse
+      @keyframes fold-in
+          0%
+            transform: translateY(0)
+          25%
+            transform: translateY(-25%)
+          50%
+            transform: translateY(-50%)
+          75%
+            transform: translateY(-75%)
+          100%
+            transform: translateY(-100%)
     .shopcart-list
       position: absolute
       left: 0
