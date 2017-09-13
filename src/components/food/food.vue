@@ -36,7 +36,7 @@
                         v-on:toggleOnlyContent="toggleOnlyContent"></ratingselect>
           <div class="rating-content-wrapper">
             <ul v-show="food.ratings && food.ratings.length">
-              <li class="rating-item border-1px" v-for="rating in food.ratings" v-show="needShow(rating)">
+              <li class="rating-item border-height" v-for="rating in food.ratings" v-show="needShow(rating)">
                 <div class="user">
                   <span class="name">{{rating.username}}</span>
                   <img class="avatar" width="12" height="12" :src="rating.avatar">
@@ -259,7 +259,7 @@
           .rating-item
             position: relative
             padding: 16px 0
-            border-1px(rgba(7, 17, 27, 0.1))
+            border-bottom(rgba(7, 17, 27, 0.1))
             .user
               position: absolute
               top: 16px

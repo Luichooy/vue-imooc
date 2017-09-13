@@ -309,7 +309,7 @@
           box-sizing: border-box
           height: 48px
           padding: 12px 0
-          border-1px(rgba(7, 17, 27, 0.1))
+          border-bottom(rgba(7, 17, 27, 0.1))
           .name
             line-height: 24px
             font-size: 14px

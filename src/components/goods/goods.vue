@@ -4,7 +4,7 @@
       <ul>
         <li class="menu-item" v-for="(item, index) in goods" :class="{'current':currentIndex === index}"
             @click="scrollTo(index,$event)">
-          <span class="text border-1px">
+          <span class="text border-height">
             <span class="icon" v-show="item.type>0" :class="classMap[item.type]"></span>
             {{item.name}}
         </span>
@@ -16,7 +16,7 @@
         <li class="food-list food-list-hook" v-for="item in goods">
           <h1 class="title">{{item.name}}</h1>
           <ul>
-            <li class="food-item border-1px" v-for="food in item.foods" @click="selectFood(food, $event)">
+            <li class="food-item border-height" v-for="food in item.foods" @click="selectFood(food, $event)">
               <div class="icon">
                 <img width="57" height="57" :src="food.icon">
               </div>
@@ -210,7 +210,7 @@
           display: table-cell
           vertical-align: middle
           width: 56px
-          border-1px(rgba(7, 17, 27, 0.1))
+          border-bottom(rgba(7, 17, 27, 0.1))
           font-size: 12px
     .foods-wrapper
       flex: 1
@@ -227,7 +227,7 @@
           display: flex
           margin: 18px
           padding-bottom: 18px
-          border-1px(rgba(7, 17, 27, 0.1))
+          border-bottom(rgba(7, 17, 27, 0.1))
           &:last-child
             margin-bottom: 0
           &:last-child:after
