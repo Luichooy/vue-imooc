@@ -62,15 +62,16 @@
     },
     methods: {
       select(type, event){
-        if (!event._constructed) {
-          return;
-        }
+//        if (!event._constructed) {
+//          return;
+//        }
+
         this.$emit('toggleType', type);
       },
       toggle(event){
-        if (!event._constructed) {
-          return;
-        }
+//        if (!event._constructed) {
+//          return;
+//        }
 //        this.onlyContent = !this.onlyContent;
         this.$emit('toggleOnlyContent', !this.onlyContent);
       }

@@ -28,6 +28,38 @@
       </div>
     </div>
     <split></split>
+    <div class="ratings-wrapper">
+      <ratingselect :select-type="selectType" :only-content="onlyContent" :desc="desc"
+                    :ratings="ratings" v-on:toggleType="toggleType"
+                    v-on:toggleOnlyContent="toggleOnlyContent"></ratingselect>
+      <div class="ratings-list">
+        <ul>
+          <li class="rating-item" v-for="rating in ratings">
+            <div class="avatar-wrapper">
+              <img :src="rating.avatar" alt="">
+            </div>
+            <div class="rating-detail">
+              <div>
+                <span class="username">{{rating.username}}</span>
+                <span class="rating-time">{{rating.rateTime}}</span>
+              </div>
+              <div>
+                <div class="star-wrapper"></div>
+                <span class="dilivery-time">{{rating.deliveryTime}}分钟送达</span>
+              </div>
+              <div>{{rating.text}}</div>
+              <div>
+                <div class="recommend-wrapper">
+                  <ul>
+                    <li v-for="recommend in rating.recommend">{{recommend}}</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
 
 </template>
@@ -35,8 +67,13 @@
 <script type="text/ecmascript-6">
   import star from '../star/star.vue';
   import split from '../split/split.vue';
+  import ratingselect from '../ratingselect/ratingselect.vue';
 
   const ERR_OK = 0;
+  //  const POSITIVE = 0;
+  //  const NEGATIVE = 1;
+  const ALL = 2;
+
   export default {
     props: {
       seller: {
@@ -45,8 +82,24 @@
     },
     data() {
       return {
-        ratings: []
+        ratings: [],
+        selectType: ALL,
+        onlyContent: false,
+        desc: {
+          all: '全部',
+          positive: '满意',
+          negative: '不满意'
+        }
       };
+    },
+    methods: {
+      toggleType(type) {
+        console.log(type);
+        this.selectType = type;
+      },
+      toggleOnlyContent(onlyContent) {
+        this.onlyContent = onlyContent;
+      }
     },
     created() {
       this.$http.get('/api/ratings').then(res => {
@@ -62,7 +115,8 @@
     },
     components: {
       star,
-      split
+      split,
+      ratingselect
     }
   };
 </script>
@@ -115,4 +169,9 @@
             font-size: 12px
             color: rgb(147,153,159)
 
+    .ratings-wrapper
+      .ratings-list
+        padding: 18px
+        & > .rating-item + .rating-item
+          border-top(red)
 </style>
