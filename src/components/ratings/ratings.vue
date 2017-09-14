@@ -32,42 +32,48 @@
       <ratingselect :select-type="selectType" :only-content="onlyContent" :desc="desc"
                     :ratings="ratings" v-on:toggleType="toggleType"
                     v-on:toggleOnlyContent="toggleOnlyContent"></ratingselect>
-      <div class="ratings-list">
+      <div class="ratings-list" ref="ratings-list">
         <ul>
-          <li class="rating-item" v-for="rating in ratings">
+          <li class="rating-item border-height" v-for="rating in ratings">
             <div class="avatar-wrapper">
-              <img :src="rating.avatar" alt="">
+              <img :src="rating.avatar" alt="" width="100%" height="100%">
             </div>
             <div class="rating-detail">
-              <div>
+              <div class="rating-user clearfix">
                 <span class="username">{{rating.username}}</span>
                 <span class="rating-time">{{rating.rateTime}}</span>
               </div>
-              <div>
-                <div class="star-wrapper"></div>
+              <div class="rating-star">
+                <div class="star-wrapper">
+                  <star :size="36" :score="rating.score"></star>
+                </div>
                 <span class="dilivery-time">{{rating.deliveryTime}}分钟送达</span>
               </div>
-              <div>{{rating.text}}</div>
-              <div>
-                <div class="recommend-wrapper">
-                  <ul>
-                    <li v-for="recommend in rating.recommend">{{recommend}}</li>
-                  </ul>
-                </div>
+              <div class="rating-text">{{rating.text}}</div>
+              <div class="recommend-wrapper">
+                <i class="rating-icon"
+                   :class="{'icon-thumb_up': rating.rateType === 0, 'icon-thumb_down': rating.rateType === 1}"></i>
+                <ul class="recommend-list">
+                  <li class="recommend-item" v-for="recommend in rating.recommend">{{recommend}}</li>
+                </ul>
               </div>
             </div>
           </li>
         </ul>
       </div>
     </div>
+    <shopcart :select-foods="selectFoods" :delivery-price="seller.deliveryPrice"
+              :min-price="seller.minPrice"></shopcart>
   </div>
 
 </template>
 
 <script type="text/ecmascript-6">
+  import BScroll from 'better-scroll';
   import star from '../star/star.vue';
   import split from '../split/split.vue';
   import ratingselect from '../ratingselect/ratingselect.vue';
+  import shopcart from '../shopcart/shopcart.vue';
 
   const ERR_OK = 0;
   //  const POSITIVE = 0;
@@ -92,7 +98,28 @@
         }
       };
     },
+    created() {
+      this.$http.get('/api/ratings').then(res => {
+        res = res.body;
+        if (res.errno === ERR_OK) {
+          this.ratings = res.data;
+
+          this.$nextTick(function () {
+            this._initScroll();
+          });
+        } else {
+          console.log('请求失败');
+        }
+      }, error => {
+        console.log(error);
+      });
+    },
     methods: {
+      _initScroll() {
+        this.ratingList = new BScroll(this.$refs['ratings-list'], {
+          click: true
+        });
+      },
       toggleType(type) {
         console.log(type);
         this.selectType = type;
@@ -101,22 +128,11 @@
         this.onlyContent = onlyContent;
       }
     },
-    created() {
-      this.$http.get('/api/ratings').then(res => {
-        res = res.body;
-        if (res.errno === ERR_OK){
-          this.ratings = res.data;
-        } else {
-          console.log('请求失败');
-        }
-      }, error => {
-        console.log(error);
-      });
-    },
     components: {
       star,
       split,
-      ratingselect
+      ratingselect,
+      shopcart
     }
   };
 </script>
@@ -125,27 +141,27 @@
   @import "../../common/stylus/mixin.styl"
   .ratings
     .ratings-top
-      padding:18px 0
+      padding: 18px 0
       .left
         width: 138px
-        float:left
-        border-right(rgba(7,17,27,0.1))
-        box-sizing :border-box
-        text-align:center
+        float: left
+        border-right(rgba(7, 17, 27, 0.1))
+        box-sizing: border-box
+        text-align: center
         .mark
           line-height: 28px
           font-size: 24px
-          color:rgb(255,153,0)
+          color: rgb(255, 153, 0)
         .mark-type
           margin: 6px 0 8px 0
           line-height: 12px
           font-size: 12px
-          color:rgb(7,17,27)
+          color: rgb(7, 17, 27)
         .mark-desc
           margin-bottom: 6px
           line-height: 10px
           font-size: 10px
-          color: rgba(7,17,27,0.5)
+          color: rgba(7, 17, 27, 0.5)
       .right
         float: left
         padding: 0 24px
@@ -156,22 +172,87 @@
             margin-right: 12px
             line-height 18px
             font-size: 12px
-            color: rgb(7,17,27)
+            color: rgb(7, 17, 27)
           .star-wrapper
-            display :inline-block
+            display: inline-block
             margin-right: 12px
           .score
             line-height: 18px
             font-size: 12px
-            color: rgb(255,153,0)
+            color: rgb(255, 153, 0)
           .delivery-time
             line-height: 18px
             font-size: 12px
-            color: rgb(147,153,159)
+            color: rgb(147, 153, 159)
 
     .ratings-wrapper
       .ratings-list
-        padding: 18px
-        & > .rating-item + .rating-item
-          border-top(red)
+        padding: 0 18px
+        .rating-item + .rating-item
+          border-top(rgba(7, 17, 27, 0.1))
+        .rating-item
+          display: flex
+          padding: 18px 0
+        .avatar-wrapper
+          flex: 0 0 28px
+          padding-right: 12px
+          width: 28px
+          height: 28px
+          img
+            border-radius: 50%
+        .rating-detail
+          flex: 1 1 auto
+          /*vertical-align: top*/
+          .rating-user
+            margin-bottom: 4px
+            .username
+              float: left
+              line-height: 12px
+              font-size: 10px
+              color: rgb(7, 17, 27)
+            .rating-time
+              float: right
+              line-height: 12px
+              font-size: 10px
+              font-weight: 200
+              color: rgb(147, 153, 159)
+          .rating-star
+            font-size: 0
+            .star-wrapper
+              display: inline-block
+              vertical-align: middle
+              margin-right: 12px
+            .dilivery-time
+              display: inline-block
+              vertical-align: middle
+              line-height: 12px
+              font-size: 10px
+              font-weight: 200
+              color: rgb(147, 153, 159)
+          .rating-text
+            margin: 6px 0 8px 0
+            line-height: 18px
+            font-size: 12px
+            color: rgb(7, 17, 27)
+          .recommend-wrapper
+            .rating-icon
+              display: inline-block
+              margin-right: 8px
+              line-height: 16px
+              font-size: 12px
+              &.icon-thumb_up
+                color: rgb(0, 160, 220)
+              &.icon-thumb_down
+                color: rgb(183, 187, 191)
+            .recommend-list
+              display: inline-block
+              font-size: 0
+              .recommend-item
+                display: inline-block
+                margin-right: 8px
+                padding: 0 6px
+                line-height: 16px
+                border: 1px solid rgba(7, 17, 27, 0.1)
+                font-size: 9px
+                color: rgb(147, 153, 159)
 </style>
