@@ -89,6 +89,7 @@
     },
     methods: {
       _initScroll() {
+        console.log(this.$refs);
         this.contentScroll = new BScroll(this.$refs['seller-content'], {
           click: true
         });
