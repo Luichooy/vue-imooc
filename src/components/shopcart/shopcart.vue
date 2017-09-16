@@ -15,8 +15,8 @@
         <div class="pay" :class="payClass">{{payDesc}}</div>
       </div>
     </div>
-    <!--<transition name="fold">-->
-      <div class="shopcart-list fold-enter-active" v-show="listShow">
+    <transition name="fold">
+      <div class="shopcart-list" v-show="listShow">
         <div class="list-header">
           <h1 class="title">购物车</h1>
           <span class="empty" @click="empty">清空</span>
@@ -35,10 +35,10 @@
           </ul>
         </div>
       </div>
-    <!--</transition>-->
-    <!--<transition name="fade">-->
+    </transition>
+    <transition name="mask-fade">
       <div class="list-mask" v-show="listShow" @click="hideList"></div>
-    <!--</transition>-->
+    </transition>
   </div>
 </template>
 
@@ -50,7 +50,7 @@
     props: {
       selectFoods: {
         type: Array,
-        default(){
+        default() {
           return [
             {
               price: 0,
@@ -68,7 +68,7 @@
         default: 0
       }
     },
-    data(){
+    data() {
       return {
         balls: [
           {
@@ -87,21 +87,21 @@
       };
     },
     computed: {
-      totalPrice(){
+      totalPrice() {
         let total = 0;
         this.selectFoods.forEach(food => {
           total += food.price * food.count;
         });
         return total;
       },
-      totalCount(){
+      totalCount() {
         let count = 0;
         this.selectFoods.forEach(food => {
           count += food.count;
         });
         return count;
       },
-      payDesc(){
+      payDesc() {
         if (this.totalPrice === 0) {
           return `${this.minPrice}元起送`;
         } else if (this.totalPrice < this.minPrice) {
@@ -110,14 +110,14 @@
           return '去结算';
         }
       },
-      payClass(){
+      payClass() {
         if (this.totalPrice < this.minPrice) {
           return 'not-enough';
         } else {
           return 'enough';
         }
       },
-      listShow(){
+      listShow() {
         if (!this.totalCount) {
           this.fold = true;
           return false;
@@ -141,21 +141,21 @@
       }
     },
     methods: {
-      toggleList(){
+      toggleList() {
         if (!this.totalCount) {
           return;
         }
         this.fold = !this.fold;
       },
-      hideList(){
+      hideList() {
         this.fold = true;
       },
-      empty(){
+      empty() {
         this.selectFoods.forEach((food) => {
           food.count = 0;
         });
       },
-      pay(){
+      pay() {
         if (this.totalPrice < this.minPrice) {
           return;
         } else {
@@ -185,6 +185,7 @@
       height: 100%
       background-color: #141d27
       color: rgba(255, 255, 255, 0.4)
+      z-index: 11
       .content-left
         flex: 1
         .logo-wrapper
@@ -210,21 +211,21 @@
             &.highlight
               background-color: rgb(0, 160, 220)
               color: #ffffff
-        .num
-          display: inline-block
-          position: absolute
-          right: 0
-          top: 0
-          width: 24px
-          height: 16px
-          line-height: 16px
-          text-align: center
-          font-size: 9px
-          font-weight: 700
-          background-color: rgb(240, 20, 20)
-          box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4)
-          border-radius: 16px
-          color: #fff
+          .num
+            display: inline-block
+            position: absolute
+            right: 0
+            top: 0
+            width: 24px
+            height: 16px
+            line-height: 16px
+            text-align: center
+            font-size: 9px
+            font-weight: 700
+            background-color: rgb(240, 20, 20)
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4)
+            border-radius: 16px
+            color: #ffffff
         .price
           display: inline-block
           vertical-align: top
@@ -236,7 +237,7 @@
           font-size: 16px
           font-weight: 700
           &.highlight
-            color: #fff
+            color: #ffffff
         .desc
           display: inline-block
           vertical-align: top
@@ -257,18 +258,30 @@
             background-color: #2b333b
           &.enough
             background-color: #00b43c
-            color: #fff
+            color: #ffffff
+
+    .fold-enter-active
+      animation: fold-in 300ms
+    .fold-leave-active
+      animation: fold-in 300ms reverse
+      @keyframes fold-in
+          0%
+            transform: translateY(0)
+          25%
+            transform: translateY(-25%)
+          50%
+            transform: translateY(-50%)
+          75%
+            transform: translateY(-75%)
+          100%
+            transform: translateY(-100%)
     .shopcart-list
       position: absolute
       left: 0
-      top: 0
-      z-index: -1
+      top:0
+      transform :translateY(-100%)
       width: 100%
-      transition: all 0.4s linear
-      &.fold-enter-active, &.fold-leave-active
-        transform: translate3D(0, -100%, 0)
-      &.fold-enter, &.fold-leave-active
-        transform: translate3D(0, 0, 0)
+      z-index: 10
       .list-header
         height: 40px
         line-height: 40px
@@ -290,13 +303,13 @@
         padding: 0 18px
         max-height: 217px
         overflow: hidden
-        background-color: #fff;
+        background-color: #ffffff;
         .food
           position: relative
           box-sizing: border-box
           height: 48px
           padding: 12px 0
-          border-1px(rgba(7, 17, 27, 0.1))
+          border-bottom(rgba(7, 17, 27, 0.1))
           .name
             line-height: 24px
             font-size: 14px
@@ -316,6 +329,11 @@
             top: 50%
             transform: translateY(-50%)
 
+    .mask-fade-enter-active,.mask-fade-leave-active
+      transition: all ease 300ms
+    .mask-fade-enter,.mask-fade-leave-to
+      opacity:0
+      background-color: rgba(7, 17, 27, 0)
     .list-mask
       position: fixed
       top: 0
@@ -324,11 +342,5 @@
       height: 100%
       z-index: 9
       backdrop-filter: blur(10px)
-      transition: all 0.4s linear
-      &.fade-enter-active, &.fade-leave-active
-        opacity: 1
-        background-color: rgba(7, 17, 27, 0.6)
-      &.fade-enter, &.fade-leave-active
-        opacity: 0
-        background-color: rgba(7, 17, 27, 0)
+      background-color: rgba(7, 17, 27, 0.6)
 </style>

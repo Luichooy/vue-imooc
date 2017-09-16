@@ -212,6 +212,11 @@
       height: 100%
       z-index: -1
       filter: blur(10px)
+    .fade-enter-active,.fade-leave-active
+      transition: all linear 300ms
+    .fade-enter,.fade-leave-to
+      opacity: 0
+      background:rgba(7, 17, 27, 0)
     .detail
       position: fixed
       top: 0
@@ -223,12 +228,6 @@
       background: rgba(7, 17, 27, 0.8)
       transition:all 0.5s linear
       backdrop-filter:blur(10px)// 浮层背景模糊，只在iphone上有效
-      &.fade-enter-active, &.fade-leave
-        opacity: 1
-        /*background: rgba(7, 17, 27, 0.8)*/
-      &.fade-enter, &.fade-leave-active
-        opacity: 0
-        /*background: rgba(7, 17, 27, 0)*/
       .detail-wrapper
         width: 100%
         min-height: 100%

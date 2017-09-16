@@ -1,6 +1,6 @@
 <template>
   <div class="ratingselect">
-    <div class="rating-type border-1px">
+    <div class="rating-type border-height">
       <div @click="select(2,$event)" class="block positive" :class="{'active':selectType===2}">{{desc.all}}<span
         class="count">{{ratings.length}}</span></div>
       <div @click="select(0,$event)" class="block positive" :class="{'active':selectType===0}">{{desc.positive}}<span
@@ -62,15 +62,16 @@
     },
     methods: {
       select(type, event){
-        if (!event._constructed) {
-          return;
-        }
+//        if (!event._constructed) {
+//          return;
+//        }
+
         this.$emit('toggleType', type);
       },
       toggle(event){
-        if (!event._constructed) {
-          return;
-        }
+//        if (!event._constructed) {
+//          return;
+//        }
 //        this.onlyContent = !this.onlyContent;
         this.$emit('toggleOnlyContent', !this.onlyContent);
       }
@@ -83,7 +84,7 @@
     .rating-type
       padding: 18px 0
       margin: 0 18px
-      border-1px(rgba(7, 17, 27, 0.1))
+      border-bottom(rgba(7, 17, 27, 0.1))
       font-size: 0
       .block
         display: inline-block

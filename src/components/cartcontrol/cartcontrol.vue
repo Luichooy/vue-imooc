@@ -41,19 +41,17 @@
 <style lang="stylus" rel="stylesheet/stylus">
   .cartcontrol
     font-size: 0
+    .move-enter-active,.move-leave-active
+      transition: all 0.2s linear
+    .move-enter,.move-leave-to
+      opacity: 0
+      transform: translate3D(24px, 0, 0) rotateZ(-180deg)
     .cart-decrease
       display: inline-block
       padding: 6px
       line-height: 24px
       font-size: 24px
       color: rgb(0, 160, 220)
-      transition: all 0.2s linear
-      &.move-enter-active, &.move-leave-active
-        opacity: 1
-        transform: translate3D(0, 0, 0) rotateZ(0)
-      &.move-enter, &.move-leave-active
-        opacity: 0
-        transform: translate3D(24px, 0, 0) rotateZ(-180deg)
     .cart-count
       display: inline-block
       vertical-align: top
