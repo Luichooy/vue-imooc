@@ -36,7 +36,7 @@
                         v-on:toggleOnlyContent="toggleOnlyContent"></ratingselect>
           <div class="ratings-list">
             <ul>
-              <li class="rating-item border-height" v-for="rating in ratings">
+              <li class="rating-item border-height" v-for="rating in ratings" v-show="needShow(rating)">
                 <div class="avatar-wrapper">
                   <img :src="rating.avatar" alt="" width="100%" height="100%">
                 </div>
@@ -126,12 +126,30 @@
       });
     },
     methods: {
+      needShow(rating) {
+        let type = this.selectType;
+        let text = rating.text;
+        if (this.onlyContent && !text) {
+          return false;
+        }
+        if (this.selectType === ALL) {
+          return true;
+        } else {
+          return rating.rateType === type;
+        }
+      },
       toggleType(type) {
         console.log(type);
         this.selectType = type;
+        this.$nextTick(() => {
+          this.scroll.refresh();
+        });
       },
       toggleOnlyContent(onlyContent) {
         this.onlyContent = onlyContent;
+        this.$nextTick(() => {
+          this.scroll.refresh();
+        });
       }
     },
     filters: {
