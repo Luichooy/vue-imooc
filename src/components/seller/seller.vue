@@ -241,7 +241,7 @@
           .info-list
             .info-item
               padding: 16px 12px
-              lint-height: 16px
+              line-height: 16px
               border-top(rgba(7,17,27,0.1))
               font-size: 12px
               font-weight: 200

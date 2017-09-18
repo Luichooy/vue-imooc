@@ -25,7 +25,7 @@
             </div>
             <div class="score-wrapper">
               <span class="label">送达时间</span>
-              <span class="delivery-time">{{seller.deliveryTime}}</span>
+              <span class="delivery-time">{{seller.deliveryTime}}分钟</span>
             </div>
           </div>
         </div>
