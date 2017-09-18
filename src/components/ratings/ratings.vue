@@ -1,67 +1,67 @@
 <template>
   <div class="ratings">
-    <div class="ratings-top clearfix">
-      <div class="left border-width">
-        <p class="mark">{{seller.score}}</p>
-        <p class="mark-type">综合评分</p>
-        <p class="mark-desc">高于周边商家{{seller.rankRate}}%</p>
-      </div>
-      <div class="right">
-        <div class="score-wrapper">
-          <span class="label">服务态度</span>
-          <div class="star-wrapper">
-            <star :size="24" :score="seller.serviceScore"></star>
-          </div>
-          <span class="score">{{seller.serviceScore}}</span>
+      <div class="ratings-top clearfix">
+        <div class="left border-width">
+          <p class="mark">{{seller.score}}</p>
+          <p class="mark-type">综合评分</p>
+          <p class="mark-desc">高于周边商家{{seller.rankRate}}%</p>
         </div>
-        <div class="score-wrapper">
-          <span class="label">商品评分</span>
-          <div class="star-wrapper">
-            <star :size="24" :score="seller.foodScore"></star>
-          </div>
-          <span class="score">{{seller.foodScore}}</span>
-        </div>
-        <div class="score-wrapper">
-          <span class="label">送达时间</span>
-          <span class="delivery-time">{{seller.deliveryTime}}</span>
-        </div>
-      </div>
-    </div>
-    <split></split>
-    <div class="ratings-wrapper">
-      <ratingselect :select-type="selectType" :only-content="onlyContent" :desc="desc"
-                    :ratings="ratings" v-on:toggleType="toggleType"
-                    v-on:toggleOnlyContent="toggleOnlyContent"></ratingselect>
-      <div class="ratings-list" ref="ratings-list">
-        <ul>
-          <li class="rating-item border-height" v-for="rating in ratings">
-            <div class="avatar-wrapper">
-              <img :src="rating.avatar" alt="" width="100%" height="100%">
+        <div class="right">
+          <div class="score-wrapper">
+            <span class="label">服务态度</span>
+            <div class="star-wrapper">
+              <star :size="24" :score="seller.serviceScore"></star>
             </div>
-            <div class="rating-detail">
-              <div class="rating-user clearfix">
-                <span class="username">{{rating.username}}</span>
-                <span class="rating-time">{{rating.rateTime}}</span>
+            <span class="score">{{seller.serviceScore}}</span>
+          </div>
+          <div class="score-wrapper">
+            <span class="label">商品评分</span>
+            <div class="star-wrapper">
+              <star :size="24" :score="seller.foodScore"></star>
+            </div>
+            <span class="score">{{seller.foodScore}}</span>
+          </div>
+          <div class="score-wrapper">
+            <span class="label">送达时间</span>
+            <span class="delivery-time">{{seller.deliveryTime}}</span>
+          </div>
+        </div>
+      </div>
+      <split></split>
+      <div class="ratings-wrapper">
+        <ratingselect :select-type="selectType" :only-content="onlyContent" :desc="desc"
+                      :ratings="ratings" v-on:toggleType="toggleType"
+                      v-on:toggleOnlyContent="toggleOnlyContent"></ratingselect>
+        <div class="ratings-list" ref="ratings-list">
+          <ul>
+            <li class="rating-item border-height" v-for="rating in ratings">
+              <div class="avatar-wrapper">
+                <img :src="rating.avatar" alt="" width="100%" height="100%">
               </div>
-              <div class="rating-star">
-                <div class="star-wrapper">
-                  <star :size="36" :score="rating.score"></star>
+              <div class="rating-detail">
+                <div class="rating-user clearfix">
+                  <span class="username">{{rating.username}}</span>
+                  <span class="rating-time">{{rating.rateTime}}</span>
                 </div>
-                <span class="dilivery-time">{{rating.deliveryTime}}分钟送达</span>
+                <div class="rating-star">
+                  <div class="star-wrapper">
+                    <star :size="36" :score="rating.score"></star>
+                  </div>
+                  <span class="dilivery-time">{{rating.deliveryTime}}分钟送达</span>
+                </div>
+                <div class="rating-text">{{rating.text}}</div>
+                <div class="recommend-wrapper">
+                  <i class="rating-icon"
+                     :class="{'icon-thumb_up': rating.rateType === 0, 'icon-thumb_down': rating.rateType === 1}"></i>
+                  <ul class="recommend-list">
+                    <li class="recommend-item" v-for="recommend in rating.recommend">{{recommend}}</li>
+                  </ul>
+                </div>
               </div>
-              <div class="rating-text">{{rating.text}}</div>
-              <div class="recommend-wrapper">
-                <i class="rating-icon"
-                   :class="{'icon-thumb_up': rating.rateType === 0, 'icon-thumb_down': rating.rateType === 1}"></i>
-                <ul class="recommend-list">
-                  <li class="recommend-item" v-for="recommend in rating.recommend">{{recommend}}</li>
-                </ul>
-              </div>
-            </div>
-          </li>
-        </ul>
+            </li>
+          </ul>
+        </div>
       </div>
-    </div>
     <shopcart :select-foods="selectFoods" :delivery-price="seller.deliveryPrice"
               :min-price="seller.minPrice"></shopcart>
   </div>
@@ -105,7 +105,13 @@
           this.ratings = res.data;
 
           this.$nextTick(function () {
-            this._initScroll();
+            if (!this.ratingList) {
+              this.ratingList = new BScroll(this.$refs['ratings-list'], {
+                click: true
+              });
+            } else {
+              this.ratingList.refresh();
+            }
           });
         } else {
           console.log('请求失败');
@@ -115,11 +121,6 @@
       });
     },
     methods: {
-      _initScroll() {
-        this.ratingList = new BScroll(this.$refs['ratings-list'], {
-          click: true
-        });
-      },
       toggleType(type) {
         console.log(type);
         this.selectType = type;
@@ -187,6 +188,12 @@
 
     .ratings-wrapper
       .ratings-list
+        position : fixed
+        top: 414px
+        bottom: 48px
+        left: 0
+        right: 0
+        overflow: hidden
         padding: 0 18px
         .rating-item + .rating-item
           border-top(rgba(7, 17, 27, 0.1))
