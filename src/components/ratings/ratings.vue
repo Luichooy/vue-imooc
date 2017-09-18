@@ -43,7 +43,7 @@
                 <div class="rating-detail">
                   <div class="rating-user clearfix">
                     <span class="username">{{rating.username}}</span>
-                    <span class="rating-time">{{rating.rateTime}}</span>
+                    <span class="rating-time">{{rating.rateTime | formatDate}}</span>
                   </div>
                   <div class="rating-star">
                     <div class="star-wrapper">
@@ -78,6 +78,7 @@
   import split from '../split/split.vue';
   import ratingselect from '../ratingselect/ratingselect.vue';
   import shopcart from '../shopcart/shopcart.vue';
+  import {formatDate} from '../../common/js/date';
 
   const ERR_OK = 0;
   //  const POSITIVE = 0;
@@ -131,6 +132,12 @@
       },
       toggleOnlyContent(onlyContent) {
         this.onlyContent = onlyContent;
+      }
+    },
+    filters: {
+      formatDate(time) {
+        let date = new Date(time);
+        return formatDate(date, 'yyyy-MM-dd hh:mm:ss');
       }
     },
     components: {
@@ -216,6 +223,7 @@
             flex: 1 1 auto
             /*vertical-align: top*/
             .rating-user
+              width: 100%
               margin-bottom: 4px
               .username
                 float: left
