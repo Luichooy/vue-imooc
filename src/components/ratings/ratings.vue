@@ -1,72 +1,68 @@
 <template>
-  <div class="ratings">
-    <div class="ratings-wrapper" ref="ratings-wrapper">
-      <div class="ratings-content">
-        <div class="overview">
-          <div class="overview-left border-width">
-            <p class="score">{{seller.score}}</p>
-            <p class="title">综合评分</p>
-            <p class="rank">高于周边商家{{seller.rankRate}}%</p>
-          </div>
-          <div class="overview-right">
-            <div class="score-wrapper">
-              <span class="label">服务态度</span>
-              <div class="star-wrapper">
-                <star :size="36" :score="seller.serviceScore"></star>
-              </div>
-              <span class="score">{{seller.serviceScore}}</span>
-            </div>
-            <div class="score-wrapper">
-              <span class="label">商品评分</span>
-              <div class="star-wrapper">
-                <star :size="36" :score="seller.foodScore"></star>
-              </div>
-              <span class="score">{{seller.foodScore}}</span>
-            </div>
-            <div class="score-wrapper">
-              <span class="label">送达时间</span>
-              <span class="delivery-time">{{seller.deliveryTime}}分钟</span>
-            </div>
-          </div>
+  <div class="ratings" ref="ratings">
+    <div class="ratings-content">
+      <div class="overview">
+        <div class="overview-left border-width">
+          <p class="score">{{seller.score}}</p>
+          <p class="title">综合评分</p>
+          <p class="rank">高于周边商家{{seller.rankRate}}%</p>
         </div>
-        <split></split>
-        <div class="ratings-list-wrapper">
-          <ratingselect :select-type="selectType" :only-content="onlyContent" :desc="desc"
-                        :ratings="ratings" v-on:toggleType="toggleType"
-                        v-on:toggleOnlyContent="toggleOnlyContent"></ratingselect>
-          <div class="ratings-list">
-            <ul>
-              <li class="rating-item border-height" v-for="rating in ratings" v-show="needShow(rating)">
-                <div class="avatar-wrapper">
-                  <img :src="rating.avatar" alt="" width="100%" height="100%">
-                </div>
-                <div class="rating-detail">
-                  <div class="rating-user clearfix">
-                    <span class="username">{{rating.username}}</span>
-                    <span class="rating-time">{{rating.rateTime | formatDate}}</span>
-                  </div>
-                  <div class="rating-star">
-                    <div class="star-wrapper">
-                      <star :size="36" :score="rating.score"></star>
-                    </div>
-                    <span class="dilivery-time" v-show="rating.deliveryTime">{{rating.deliveryTime}}分钟送达</span>
-                  </div>
-                  <div class="rating-text">{{rating.text}}</div>
-                  <div class="recommend-wrapper" v-show="rating.recommend && rating.recommend.length">
-                    <i class="rating-icon icon-thumb_up"></i>
-                    <ul class="recommend-list">
-                      <li class="recommend-item" v-for="recommend in rating.recommend">{{recommend}}</li>
-                    </ul>
-                  </div>
-                </div>
-              </li>
-            </ul>
+        <div class="overview-right">
+          <div class="score-wrapper">
+            <span class="label">服务态度</span>
+            <div class="star-wrapper">
+              <star :size="36" :score="seller.serviceScore"></star>
+            </div>
+            <span class="score">{{seller.serviceScore}}</span>
+          </div>
+          <div class="score-wrapper">
+            <span class="label">商品评分</span>
+            <div class="star-wrapper">
+              <star :size="36" :score="seller.foodScore"></star>
+            </div>
+            <span class="score">{{seller.foodScore}}</span>
+          </div>
+          <div class="score-wrapper">
+            <span class="label">送达时间</span>
+            <span class="delivery-time">{{seller.deliveryTime}}分钟</span>
           </div>
         </div>
       </div>
+      <split></split>
+      <div class="ratings-list-wrapper">
+        <ratingselect :select-type="selectType" :only-content="onlyContent" :desc="desc"
+                      :ratings="ratings" v-on:toggleType="toggleType"
+                      v-on:toggleOnlyContent="toggleOnlyContent"></ratingselect>
+        <div class="ratings-list">
+          <ul>
+            <li class="rating-item border-height" v-for="rating in ratings" v-show="needShow(rating)">
+              <div class="avatar-wrapper">
+                <img :src="rating.avatar" alt="" width="100%" height="100%">
+              </div>
+              <div class="rating-detail">
+                <div class="rating-user clearfix">
+                  <span class="username">{{rating.username}}</span>
+                  <span class="rating-time">{{rating.rateTime | formatDate}}</span>
+                </div>
+                <div class="rating-star">
+                  <div class="star-wrapper">
+                    <star :size="36" :score="rating.score"></star>
+                  </div>
+                  <span class="dilivery-time" v-show="rating.deliveryTime">{{rating.deliveryTime}}分钟送达</span>
+                </div>
+                <div class="rating-text">{{rating.text}}</div>
+                <div class="recommend-wrapper" v-show="rating.recommend && rating.recommend.length">
+                  <i class="rating-icon icon-thumb_up"></i>
+                  <ul class="recommend-list">
+                    <li class="recommend-item" v-for="recommend in rating.recommend">{{recommend}}</li>
+                  </ul>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
-    <shopcart :select-foods="selectFoods" :delivery-price="seller.deliveryPrice"
-              :min-price="seller.minPrice"></shopcart>
   </div>
 
 </template>
@@ -76,7 +72,6 @@
   import star from '../star/star.vue';
   import split from '../split/split.vue';
   import ratingselect from '../ratingselect/ratingselect.vue';
-  import shopcart from '../shopcart/shopcart.vue';
   import {formatDate} from '../../common/js/date';
 
   const ERR_OK = 0;
@@ -110,7 +105,7 @@
 
           this.$nextTick(function () {
             if (!this.scroll) {
-              this.scroll = new BScroll(this.$refs['ratings-wrapper'], {
+              this.scroll = new BScroll(this.$refs['ratings'], {
                 click: true
               });
             } else {
@@ -160,8 +155,7 @@
     components: {
       star,
       split,
-      ratingselect,
-      shopcart
+      ratingselect
     }
   };
 </script>
@@ -169,13 +163,13 @@
 <style lang="stylus" rel="stylesheet/stylus">
   @import "../../common/stylus/mixin.styl"
   .ratings
-    .ratings-wrapper
-      position : fixed
-      top: 174px
-      bottom: 48px
-      left: 0
-      right: 0
-      overflow: hidden
+    position : absolute
+    top: 174px
+    bottom: 0
+    left: 0
+    right: 0
+    overflow: hidden
+    .ratings-content
       .overview
         display: flex
         padding: 18px 0

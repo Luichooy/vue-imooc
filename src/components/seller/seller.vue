@@ -75,7 +75,6 @@
 <script type="text/ecmascript-6">
   import star from '../star/star.vue';
   import split from '../split/split.vue';
-  import shopcart from '../shopcart/shopcart.vue';
   import BScroll from 'better-scroll';
   export default {
     props: {
@@ -99,8 +98,7 @@
     },
     components: {
       star,
-      split,
-      shopcart
+      split
     }
   };
 </script>

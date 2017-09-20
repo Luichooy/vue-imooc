@@ -36,4 +36,4 @@ const app = new Vue({
 
 app.$mount('#app');
 
-router.push('/goods');
+// router.push('/goods');
