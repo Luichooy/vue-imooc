@@ -2,24 +2,24 @@
   <div class="ratings">
     <div class="ratings-wrapper" ref="ratings-wrapper">
       <div class="ratings-content">
-        <div class="ratings-top clearfix">
-          <div class="left border-width">
-            <p class="mark">{{seller.score}}</p>
-            <p class="mark-type">综合评分</p>
-            <p class="mark-desc">高于周边商家{{seller.rankRate}}%</p>
+        <div class="overview">
+          <div class="overview-left border-width">
+            <p class="score">{{seller.score}}</p>
+            <p class="title">综合评分</p>
+            <p class="rank">高于周边商家{{seller.rankRate}}%</p>
           </div>
-          <div class="right">
+          <div class="overview-right">
             <div class="score-wrapper">
               <span class="label">服务态度</span>
               <div class="star-wrapper">
-                <star :size="24" :score="seller.serviceScore"></star>
+                <star :size="36" :score="seller.serviceScore"></star>
               </div>
               <span class="score">{{seller.serviceScore}}</span>
             </div>
             <div class="score-wrapper">
               <span class="label">商品评分</span>
               <div class="star-wrapper">
-                <star :size="24" :score="seller.foodScore"></star>
+                <star :size="36" :score="seller.foodScore"></star>
               </div>
               <span class="score">{{seller.foodScore}}</span>
             </div>
@@ -49,12 +49,11 @@
                     <div class="star-wrapper">
                       <star :size="36" :score="rating.score"></star>
                     </div>
-                    <span class="dilivery-time">{{rating.deliveryTime}}分钟送达</span>
+                    <span class="dilivery-time" v-show="rating.deliveryTime">{{rating.deliveryTime}}分钟送达</span>
                   </div>
                   <div class="rating-text">{{rating.text}}</div>
-                  <div class="recommend-wrapper">
-                    <i class="rating-icon"
-                       :class="{'icon-thumb_up': rating.rateType === 0, 'icon-thumb_down': rating.rateType === 1}"></i>
+                  <div class="recommend-wrapper" v-show="rating.recommend && rating.recommend.length">
+                    <i class="rating-icon icon-thumb_up"></i>
                     <ul class="recommend-list">
                       <li class="recommend-item" v-for="recommend in rating.recommend">{{recommend}}</li>
                     </ul>
@@ -177,51 +176,63 @@
       left: 0
       right: 0
       overflow: hidden
-      .ratings-top
+      .overview
+        display: flex
         padding: 18px 0
-        .left
-          width: 138px
-          float: left
+        .overview-left
+          flex: 0 0 137px
+          width: 137px
           border-right(rgba(7, 17, 27, 0.1))
           box-sizing: border-box
           text-align: center
-          .mark
+          @media only screen and (max-width: 320px)
+            flex: 0 0 120px
+            width: 120px
+          .score
             line-height: 28px
             font-size: 24px
             color: rgb(255, 153, 0)
-          .mark-type
+          .title
             margin: 6px 0 8px 0
             line-height: 12px
             font-size: 12px
             color: rgb(7, 17, 27)
-          .mark-desc
+          .rank
             margin-bottom: 6px
             line-height: 10px
             font-size: 10px
             color: rgba(7, 17, 27, 0.5)
-        .right
-          float: left
-          padding: 0 24px
+        .overview-right
+          flex: 1
+          padding-left: 24px
+          @media only screen and (max-width: 320px)
+            padding-left: 12px
           & > .score-wrapper + .score-wrapper
             margin-top: 8px
           .score-wrapper
+            font-size: 0
             .label
-              margin-right: 12px
+              display: inline-block
+              vertical-align: top
               line-height 18px
               font-size: 12px
               color: rgb(7, 17, 27)
             .star-wrapper
               display: inline-block
-              margin-right: 12px
+              margin: 0 12px
+              @media only screen and (max-width: 320px)
+                margin: 0 6px
             .score
-              line-height: 18px
+              display: inline-block
+              vertical-align: top
+              line-height 18px
               font-size: 12px
               color: rgb(255, 153, 0)
             .delivery-time
               line-height: 18px
+              margin-left: 12px
               font-size: 12px
               color: rgb(147, 153, 159)
-
       .ratings-list-wrapper
         .ratings-list
           padding: 0 18px
@@ -238,7 +249,7 @@
             img
               border-radius: 50%
           .rating-detail
-            flex: 1 1 auto
+            flex: 1
             /*vertical-align: top*/
             .rating-user
               width: 100%
@@ -273,6 +284,7 @@
               font-size: 12px
               color: rgb(7, 17, 27)
             .recommend-wrapper
+              display: flex
               .rating-icon
                 display: inline-block
                 margin-right: 8px
@@ -280,13 +292,12 @@
                 font-size: 12px
                 &.icon-thumb_up
                   color: rgb(0, 160, 220)
-                &.icon-thumb_down
-                  color: rgb(183, 187, 191)
               .recommend-list
                 display: inline-block
                 font-size: 0
                 .recommend-item
                   display: inline-block
+                  margin-bottom: 4px
                   margin-right: 8px
                   padding: 0 6px
                   line-height: 16px
