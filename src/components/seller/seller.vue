@@ -85,16 +85,24 @@
     created(){
       this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee'];
       this.$nextTick(() => {
-        if (!this.scroll) {
+        this._initScroll();
+      });
+    },
+    watch: {
+      'seller'() {
+        this._initScroll();
+      }
+    },
+    methods: {
+      _initScroll() {
+        if (!this.scroll){
           this.scroll = new BScroll(this.$refs['seller'], {
             click: true
           });
         } else {
           this.scroll.refresh();
         }
-      });
-    },
-    methods: {
+      }
     },
     components: {
       star,
@@ -158,12 +166,11 @@
               text-align: center
               color: rgb(77,85,93)
         .delivery-list
-          margin-top: 18px
           display: flex
-          justify-content: space-between
-          text-align: center
+          margin-top: 18px
           .delivery-item
-            width: 33.33%
+            flex: 1
+            text-align: center
             .label
               margin-bottom: 4px
               line-height: 10px
@@ -181,7 +188,7 @@
           .delivery-item + .delivery-item
             border-left(rgba(7,17,27,0.1))
       .bulletin-wrapper
-        padding: 18px 18px 12px 18px
+        padding: 18px 18px 16px 18px
         .title
           title()
         .bulletin
@@ -191,7 +198,7 @@
           font-weight: 200
           color: rgb(240,20,20)
       .support-list
-        padding: 18px
+        padding: 0 18px
         .support-item
           padding: 16px 12px
           border-top(rgba(7,17,27,0.1))
@@ -204,15 +211,15 @@
             background-size: 16px 16px
             background-repeat: no-repeat
             &.decrease
-              bg-image('decrease_1')
+              bg-image('decrease_4')
             &.discount
-              bg-image('discount_1')
+              bg-image('discount_4')
             &.guarantee
-              bg-image('guarantee_1')
+              bg-image('guarantee_4')
             &.invoice
-              bg-image('invoice_1')
+              bg-image('invoice_4')
             &.special
-              bg-image('special_1')
+              bg-image('special_4')
           .text
             line-height: 16px
             font-size: 12px
