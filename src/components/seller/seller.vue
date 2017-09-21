@@ -11,11 +11,9 @@
             <span class="rating-count">（{{seller.ratingCount}}）</span>
             <span class="seller-count">月售690单</span>
           </div>
-          <div class="collection-wrapper">
-            <div class="collection-icon">
-              <i class="icon icon-favorite"></i>
-            </div>
-            <p class="collection-text">已收藏</p>
+          <div class="favorite-wrapper" @click="toggleFavorite">
+            <span class="icon-favorite" :class="{'active': favorite}"></span>
+            <span class="favorite-text">{{favoriteText}}</span>
           </div>
         </div>
         <ul class="delivery-list">
@@ -53,13 +51,15 @@
         </li>
       </ul>
       <split></split>
-      <div class="imgage-wrapper">
+      <div class="pics">
         <h1 class="title">商家实景</h1>
-        <ul class="image-list clearfix">
-          <li class="image-item" v-for="pic in seller.pics">
-            <img :src="pic" alt="">
-          </li>
-        </ul>
+        <div class="pic-wrapper" ref="pic-wrapper">
+          <ul class="pic-list" ref="pic-list">
+            <li class="pic-item" v-for="pic in seller.pics">
+              <img :src="pic" width="100%" height="100%">
+            </li>
+          </ul>
+        </div>
       </div>
       <split></split>
       <div class="basic-info">
@@ -73,19 +73,34 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import {saveLocalStorage, getLocalStorage} from '../../common/js/store';
+  import BScroll from 'better-scroll';
   import star from '../star/star.vue';
   import split from '../split/split.vue';
-  import BScroll from 'better-scroll';
+
   export default {
     props: {
       seller: {
         type: Object
       }
     },
-    created(){
+    data() {
+      return {
+        favorite: (() => {
+          return getLocalStorage(this.seller.id, 'favorite', false);
+        })()
+      };
+    },
+    computed: {
+      favoriteText() {
+        return this.favorite ? '已收藏' : '收藏';
+      }
+    },
+    created() {
       this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee'];
       this.$nextTick(() => {
         this._initScroll();
+        this._initPics();
       });
     },
     watch: {
@@ -94,13 +109,39 @@
       }
     },
     methods: {
+      toggleFavorite(event) {
+        if (!event._constructed) {
+          return;
+        } else {
+          this.favorite = !this.favorite;
+          saveLocalStorage(this.seller.id, 'favorite', this.favorite);
+        }
+      },
       _initScroll() {
-        if (!this.scroll){
+        if (!this.scroll) {
           this.scroll = new BScroll(this.$refs['seller'], {
             click: true
           });
         } else {
           this.scroll.refresh();
+        }
+      },
+      _initPics() {
+        if (this.seller.pics) {
+          let picWidth = 120;
+          let margin = 6;
+          let width = (picWidth + margin) * this.seller.pics.length - 6;
+          this.$refs['pic-list'].style.width = width + 'px';
+          this.$nextTick(() => {
+            if (!this.picScroll) {
+              this.picScroll = new BScroll(this.$refs['pic-wrapper'], {
+                scrollX: true,
+                eventPassthrough: 'vertical'
+              });
+            } else {
+              this.picScroll.refresh();
+            }
+          });
         }
       }
     },
@@ -128,7 +169,7 @@
         .seller-info
           position: relative
           padding-bottom: 18px
-          border-bottom(rgba(7,17,27,0.1))
+          border-bottom(rgba(7, 17, 27, 0.1))
           .seller-name
             title()
           .seller-desc
@@ -142,29 +183,32 @@
               line-height: 18px
               margin-right: 12px
               font-size: 10px
-              color: rgb(77,85,93)
+              color: rgb(77, 85, 93)
             .seller-count
               display: inline-block
               vertical-align: top
               line-height: 18px
               font-size: 10px
-              color: rgb(77,85,93)
-          .collection-wrapper
+              color: rgb(77, 85, 93)
+          .favorite-wrapper
             position: absolute
             right: 0
             top: 0
-            .collection-icon
+            width: 36px
+            text-align: center
+            font-size: 0
+            .icon-favorite
+              display: block
               margin-bottom: 4px
-              text-align:center
-              .icon
-                line-height: 24px
-                font-size: 24px
-                color: rgb(240,20,20)
-            .collection-text
+              line-height: 24px
+              font-size: 24px
+              color: #d4d6d9
+              &.active
+                color: rgb(240, 20, 20)
+            .favorite-text
               line-height: 10px
               font-size: 10px
-              text-align: center
-              color: rgb(77,85,93)
+              color: rgb(77, 85, 93)
         .delivery-list
           display: flex
           margin-top: 18px
@@ -175,18 +219,18 @@
               margin-bottom: 4px
               line-height: 10px
               font-size: 10px
-              color: rgb(147,153,159)
+              color: rgb(147, 153, 159)
             .value-wrapper
               line-height: 24px
               font-size: 0
               font-weight: 200
-              color: rgb(7,17,27)
+              color: rgb(7, 17, 27)
               .value
                 font-size: 24px
               .unit
                 font-size: 10px
           .delivery-item + .delivery-item
-            border-left(rgba(7,17,27,0.1))
+            border-left(rgba(7, 17, 27, 0.1))
       .bulletin-wrapper
         padding: 18px 18px 16px 18px
         .title
@@ -195,13 +239,12 @@
           line-height: 24px
           padding: 0 12px
           font-size: 12px
-          font-weight: 200
-          color: rgb(240,20,20)
+          color: rgb(240, 20, 20)
       .support-list
         padding: 0 18px
         .support-item
           padding: 16px 12px
-          border-top(rgba(7,17,27,0.1))
+          border-top(rgba(7, 17, 27, 0.1))
           .icon
             display: inline-block
             vertical-align: middle
@@ -223,23 +266,22 @@
           .text
             line-height: 16px
             font-size: 12px
-            font-weight: 200
-            color: rgb(7,17,27)
-      .imgage-wrapper
-        padding: 18px 0 18px 18px
+            color: rgb(7, 17, 27)
+      .pics
+        padding: 18px
         .title
           title()
           margin-bottom: 12px
-        .image-list
+        .pic-wrapper
           width: 100%
-          height: 90px
           overflow: hidden
-          .image-item
-            float: left
-          .image-item + .image-item
+          white-space: nowrap
+          .pic-list
+            font-size: 0
+            .pic-item + .pic-item
               margin-left: 6px
-            img
-              display: block
+            .pic-item
+              display: inline-block
               width: 120px
               height: 90px
       .basic-info
@@ -251,8 +293,7 @@
           .info-item
             padding: 16px 12px
             line-height: 16px
-            border-top(rgba(7,17,27,0.1))
+            border-top(rgba(7, 17, 27, 0.1))
             font-size: 12px
-            font-weight: 200
-            color: rgb(7,17,27)
+            color: rgb(7, 17, 27)
 </style>

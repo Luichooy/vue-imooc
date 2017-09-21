@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-header :seller = seller></v-header>
+    <v-header :seller=seller></v-header>
     <div class="tab border-height">
       <div class="tab-item">
         <router-link to="goods">商品</router-link>
@@ -12,26 +12,35 @@
         <router-link to="seller">商家</router-link>
       </div>
     </div>
-    <router-view :seller="seller"></router-view>
+    <keep-alive>
+      <router-view :seller="seller" keep-alive></router-view>
+    </keep-alive>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+  import {urlParse} from 'common/js/util';
   import header from 'components/header/header';
 
   const ERR_OK = 0;
 
   export default {
-    data () {
+    data() {
       return {
-        seller: {}
+        seller: {
+          id: (() => {
+            let queryParams = urlParse();
+            return queryParams.id;
+          })()
+        }
       };
     },
-    created () {
-      this.$http.get('/api/seller').then(res => {
+    created() {
+      this.$http.get('/api/seller?id=' + this.seller.id).then(res => {
         res = res.body;
         if (res.errno === ERR_OK) {
-          this.seller = res.data;
+          this.seller = Object.assign({}, res.data, this.seller);
+          console.log(this.seller);
         }
       }, res => {
         // fail request
